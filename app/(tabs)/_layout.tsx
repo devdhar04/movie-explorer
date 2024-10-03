@@ -8,6 +8,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
+          unmountOnBlur: true,
           tabBarIcon: ({ color }) => <FontAwesome size={24} name="film" color={color} />,
         }}
       />
@@ -15,6 +16,7 @@ export default function TabLayout() {
         name="favouriteListScreen"
         options={{
           title: 'Favourite',
+          unmountOnBlur: true,
           tabBarIcon: ({ color }) => <FontAwesome size={24} name="heart" color={color} />,
         }}
       />

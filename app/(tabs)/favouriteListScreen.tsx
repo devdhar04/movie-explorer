@@ -1,29 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, Button, Alert, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import MovieList from '../components/MovieList';
+import FavoriteMovieList from '../components/FavoriteMovieList';
+import {getFavorites} from '../storage/storage';
 
 export default function Tab() {
     const [movies, setMovies] = useState([]);
+
+    const loadFavorites = async () => {
+      const loadedFavorites = await getFavorites();
+      setMovies(loadedFavorites);
+    };
+
     useEffect(() => {
-        const loadMoviesFromAsyncStorage = async () => {
-          try {
-            const jsonValue = await AsyncStorage.getItem('@favorites');
-            if (jsonValue != null) {
-              setMovies(JSON.parse(jsonValue));
-            }
-          } catch (e) {
-            Alert.alert('Error', 'Failed to load movies.');
-          }
-        };
-    
-        loadMoviesFromAsyncStorage();
+        loadFavorites();
       }, []);
     // Display a message if no favorite movies are found
     
     return (
         <View style={styles.container}>
-             <MovieList movies={movies}  />
+             <FavoriteMovieList movies={movies}  />
         </View>
     );
 }
