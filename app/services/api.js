@@ -6,6 +6,7 @@ const API_URL = 'https://api.themoviedb.org/3/discover/movie';
 const token = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiNTdjNjA0NzE1YThlMDZkODcyNzdmZjliZDg4OWZkZSIsIm5iZiI6MTcyNzgwMTAwOS41NTg0OTIsInN1YiI6IjU4ZjI2MzBjOTI1MTQxM2Q3MjAwMWMzNSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.rlWnermTu4AENojlJ1Gs77N3g6_umxhFzTQ6qlqIoy4';
 const SEARCH = 'https://api.themoviedb.org/3/search/movie';
 const GENRE = 'https://api.themoviedb.org/3/genre/movie/list';
+const API_KEY = 'b57c604715a8e06d87277ff9bd889fde';
 
 export const fetchMovies = async (page) => {
   try {
@@ -62,11 +63,22 @@ export const searchMovies = async (title) => {
 export const getGenre = async () => {
   try {
     const response = await axios.get(`${GENRE}`, {
-      params: {query: title},
       headers: {
         Authorization: `Bearer ${token}`,
         Accept: 'application/json',
       }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching movie details:', error);
+    return null;
+  }
+};
+
+export const getCast = async (movieId) => {
+  try {
+    const response = await axios.get(`https://api.themoviedb.org/3/movie/${movieId}/credits`, {
+      params: {api_key: API_KEY},
     });
     return response.data;
   } catch (error) {

@@ -1,18 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
-import { fetchMovieDetails } from '../services/api';
+import { fetchMovieDetails ,getCast} from '../services/api';
 import { useLocalSearchParams } from 'expo-router';
 
 const MovieDetailScreen = ({ route }) => {
   const [movie, setMovie] = useState(null);
+  const [cast, setCast] = useState([]);
+  const [crew, setCrew] = useState([]);
 
   const { id, title, releaseYear } = useLocalSearchParams();
 
   useEffect(() => {
     const getMovieDetails = async () => {
       const data = await fetchMovieDetails(id);
+      console.log('MovieDetail',data);
       setMovie(data);
     };
+    const getCastDetails = async () => {
+      const data = await getCast(id);
+      console.log('getCastDetails',data.cast);
+      setCast(data.cast);
+      setCrew(data.crew);
+    };
+    getCastDetails();
     getMovieDetails();
   }, [id]);
 
@@ -29,6 +39,8 @@ const MovieDetailScreen = ({ route }) => {
       <Text style={styles.info}>Rating: {movie.vote_average}</Text>
       <Text style={styles.info}>Genres: {movie.genres.map((g) => g.name).join(', ')}</Text>
       <Text style={styles.description}>{movie.overview}</Text>
+      <Text style={styles.info}>Cast: {cast.slice(0, 5).map((g) => g.name).join(', ')}</Text>
+      <Text style={styles.info}>Crew: {crew.slice(0, 3).map((g) => g.name).join(', ')}</Text>
     </View>
   );
 };
