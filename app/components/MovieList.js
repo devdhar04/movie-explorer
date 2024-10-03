@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FlatList, StyleSheet } from 'react-native';
+import { FlatList, StyleSheet ,View,Text} from 'react-native';
 import MovieItem from './MovieItem';
 import { saveFavorites, getFavorites } from '../storage/storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -44,9 +44,16 @@ const MovieList = ({ movies }) => {
     loadFavorites();
   }, []);
 
+  const renderEmptyList = () => (
+    <View style={styles.emptyContainer}>
+      <Text>No movies found!</Text>
+    </View>
+  );
+  
   return (
     <FlatList
       data={movies}
+      ListEmptyComponent={renderEmptyList}
       renderItem={({ item }) => {
         // Check if movie is in favorites
         const isFavorite = favorites.some((fav) => fav.id === item.id);

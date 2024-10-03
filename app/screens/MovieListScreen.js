@@ -1,68 +1,66 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, Image, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import { fetchMovies } from '../services/api';
+ 
+import { View, StyleSheet } from 'react-native';
+import { fetchMovies, searchMovies } from '../services/api';
+import SearchBar from '../components/SearchBar';
+import MovieList from '../components/MovieList';
+import { getFavorites, saveFavorites } from '../storage/storage';
 
-const MovieListScreen = ({ navigation }) => {
+const MovieListScreen = () => {
   const [movies, setMovies] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [input, setInput] = useState("");
+  const [favorites, setFavorites] = useState([]);
 
-  const searchMovies = async (query) => {
-    const data = await fetchMovies(query);
-    setMovies(data);
+  // Load favorites from AsyncStorage
+  const loadFavorites = async () => {
+    const loadedFavorites = await getFavorites();
+    setFavorites(loadedFavorites);
   };
 
-  useEffect(() => {
-    searchMovies('popular');
-  }, []);
+  // Fetch movies from the API
+  const fetchMoviesList = async () => {
+    try {
+      const data = await fetchMovies();
+      if (data) {
+        setMovies(data);
+      }
+    } catch (error) {
+      console.error('Error fetching movies:', error);
+    }
+  };
 
-  const renderItem = ({ item }) => (
-    <TouchableOpacity onPress={() => navigation.navigate('MovieDetails', { movieId: item.id })}>
-      <View style={styles.movieItem}>
-        <Image
-          style={styles.poster}
-          source={{ uri: `https://image.tmdb.org/t/p/w200${item.poster_path}` }}
-        />
-        <View style={styles.info}>
-          <Text style={styles.title}>{item.title}</Text>
-          <Text style={styles.releaseDate}>{item.release_date}</Text>
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
+  // Search for movies
+  const searchMoviesList = async (query) => {
+    if (query.trim() === "") {
+      fetchMoviesList();
+      return;
+    }
+    try {
+      const data = await searchMovies(query);
+      setMovies(data.results);
+    } catch (error) {
+      console.error('Error searching movies:', error);
+    }
+  };
+
+  
+  // Effect to load favorites and fetch movies on mount
+  useEffect(() => {
+    loadFavorites();
+    fetchMoviesList();
+  }, []);
 
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.searchInput}
-        placeholder="Search Movies"
-        value={searchQuery}
-        onChangeText={(text) => setSearchQuery(text)}
-        onSubmitEditing={() => searchMovies(searchQuery)}
-      />
-      <FlatList
-        data={movies}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
-      />
+      <SearchBar input={input} setInput={setInput} searchMoviesList={searchMoviesList} />
+      <MovieList movies={movies} favorites={favorites} />
+      
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 10 },
-  movieItem: { flexDirection: 'row', marginBottom: 10 },
-  poster: { width: 100, height: 150, borderRadius: 10 },
-  info: { marginLeft: 10, justifyContent: 'center' },
-  title: { fontSize: 18, fontWeight: 'bold' },
-  releaseDate: { color: 'gray' },
-  searchInput: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 10,
-    paddingHorizontal: 8,
-    borderRadius: 8,
-  },
 });
 
 export default MovieListScreen;

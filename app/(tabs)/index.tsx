@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
  
 import { View, StyleSheet } from 'react-native';
-import { fetchMovies, searchMovies } from './services/api';
-import SearchBar from './components/SearchBar';
-import MovieList from './components/MovieList';
-import { getFavorites, saveFavorites } from './storage/storage';
-
+import { fetchMovies, searchMovies } from '../services/api';
+import SearchBar from '../components/SearchBar';
+import MovieList from '../components/MovieList';
+import { getFavorites, saveFavorites } from '../storage/storage';
+import * as NavigationBar from 'expo-navigation-bar';
 
 const MovieListScreen = () => {
   const [movies, setMovies] = useState([]);
@@ -55,7 +55,7 @@ const MovieListScreen = () => {
     <View style={styles.container}>
       <SearchBar input={input} setInput={setInput} searchMoviesList={searchMoviesList} />
       <MovieList movies={movies} favorites={favorites} />
-     
+      
     </View>
   );
 };

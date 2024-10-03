@@ -11,7 +11,7 @@ const MovieItem = ({ movie,isFavorite,onPress}) => {
       <Link
         style={styles.link}
         href={{
-          pathname: '/screens/movieDetailScreen',
+          pathname: 'screens/MovieDetailScreen',
           params: {
             id: movie.id,
             title: movie.title,
