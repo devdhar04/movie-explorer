@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { FlatList, StyleSheet ,View,Text} from 'react-native';
 import MovieItem from './MovieItem';
-import { saveFavorites, getFavorites } from '../storage/storage';
+import { saveFavorites, getGenreList } from '../storage/storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const FavoriteMovieList = ({ movies }) => {
   const [favorites, setFavorites] = useState([]);
-
+  const [genreList, setGenreList] = useState([]);
   /*
     Load favorites from AsyncStorage when the component mounts
   */
@@ -43,6 +43,9 @@ const FavoriteMovieList = ({ movies }) => {
   Load favorites when the component mounts
   */
   useEffect(() => {
+    getGenreList().then((storedGenres) => {
+      setGenreList(storedGenres); // Will log the array of genres
+    });
     loadFavorites();
   }, []);
 
@@ -64,6 +67,7 @@ const FavoriteMovieList = ({ movies }) => {
             movie={item}
             isFavorite={isFavorite} // Pass favorite status to child component
             onPress={() => toggleFavorite(item)} // Pass toggle function to child component
+            genres = {genreList}
           />
         );
       }}

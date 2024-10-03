@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
  
 import { View, StyleSheet } from 'react-native';
-import { fetchMovies, searchMovies } from '../services/api';
+import { fetchMovies, searchMovies ,getGenre} from '../services/api';
 import SearchBar from '../components/SearchBar';
 import MovieList from '../components/MovieList';
-import { getFavorites, saveFavorites } from '../storage/storage';
-import * as NavigationBar from 'expo-navigation-bar';
+import { getFavorites, saveGenreList } from '../storage/storage';
 
 const MovieListScreen = () => {
   const [movies, setMovies] = useState([]);
@@ -44,9 +43,22 @@ const MovieListScreen = () => {
     }
   };
 
+  const fetchGenreList = async () => {
+    try {
+      const data = await getGenre();
+      if (data) {
+        console.log('saveGenreList',data.genres);
+        saveGenreList(data.genres);
+      }
+    } catch (error) {
+      console.error('Error fetching movies:', error);
+    }
+  };
+
   
   // Effect to load favorites and fetch movies on mount
   useEffect(() => {
+    fetchGenreList();
     loadFavorites();
     fetchMoviesList();
   }, []);
