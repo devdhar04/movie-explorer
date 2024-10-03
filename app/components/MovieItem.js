@@ -1,4 +1,4 @@
-import React, { useState,useEffect }from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { Link } from 'expo-router';
 import FavoriteButton from './FavoriteButton';
@@ -10,7 +10,7 @@ const MovieItem = ({ movie, isFavorite, onPress, genres }) => {
 
   useEffect(() => {
     getGenreNamesById(movie.genre_ids, genres).then((storedGenres) => {
-      setGenreList(storedGenres.slice(0,3).join(',')); // Will log the array of genres
+      setGenreList(storedGenres.slice(0, 3).join(',')); // Will log the array of genres
     });
   }, []);
 
@@ -37,7 +37,7 @@ const MovieItem = ({ movie, isFavorite, onPress, genres }) => {
             <Text style={styles.releaseDate}>{movie.release_date}</Text>
             <View style={styles.favouriteContainer}>
               <Text style={styles.releaseDate}>{movie.vote_average}</Text>
-              <FavoriteButton isFavorite={isFavorite} onPress={onPress} />
+              <FavoriteButton style={styles.fav} isFavorite={isFavorite} onPress={onPress} />
             </View>
             
             <Text style={styles.genre}>
@@ -60,10 +60,16 @@ const styles = StyleSheet.create({
   favouriteContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    
   },
-  genre:{
+  genre: {
+    width:'100%',
     flexDirection: 'row',
+  },
+  fav: {
+    left: 0,
+    right: 0,
+    position: 'absolute',
   }
 });
 
