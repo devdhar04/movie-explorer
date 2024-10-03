@@ -31,6 +31,12 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "f9d1a53d-3c22-4b9b-8786-47137c0ec7aa"
+      }
+    },
+    "owner": "devdhar.s"
   }
 }

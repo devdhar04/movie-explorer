@@ -1,0 +1,76 @@
+import axios from 'axios';
+
+const BASE_URL = 'https://api.themoviedb.org/3/movie/';
+
+const API_URL = 'https://api.themoviedb.org/3/discover/movie';
+const token = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiNTdjNjA0NzE1YThlMDZkODcyNzdmZjliZDg4OWZkZSIsIm5iZiI6MTcyNzgwMTAwOS41NTg0OTIsInN1YiI6IjU4ZjI2MzBjOTI1MTQxM2Q3MjAwMWMzNSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.rlWnermTu4AENojlJ1Gs77N3g6_umxhFzTQ6qlqIoy4';
+const SEARCH = 'https://api.themoviedb.org/3/search/movie';
+const GENRE = 'https://api.themoviedb.org/3/genre/movie/list';
+
+export const fetchMovies = async (page) => {
+  try {
+    const response = await axios.get(API_URL, {
+      params: {
+        page: page,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+      },
+    });
+    return response.data.results;
+  } catch (error) {
+    console.error('Error fetching movies:', error);
+    return [];
+  }
+};
+
+
+
+export const fetchMovieDetails = async (id) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/${id}`, {
+     
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching movie details:', error);
+    return null;
+  }
+};
+
+export const searchMovies = async (title) => {
+  try {
+    const response = await axios.get(`${SEARCH}`, {
+      params: {query: title},
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching movie details:', error);
+    return null;
+  }
+};
+
+export const getGenre = async () => {
+  try {
+    const response = await axios.get(`${GENRE}`, {
+      params: {query: title},
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching movie details:', error);
+    return null;
+  }
+};
