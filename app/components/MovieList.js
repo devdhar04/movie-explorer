@@ -4,7 +4,7 @@ import MovieItem from './MovieItem';
 import { saveFavorites, getGenreList } from '../storage/storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const MovieList = ({ movies }) => {
+const MovieList = ({ movies,loadMoreMovies }) => {
   const [favorites, setFavorites] = useState([]);
   const [genreList, setGenreList] = useState([]);
 
@@ -71,6 +71,7 @@ const MovieList = ({ movies }) => {
         );
       }}
       keyExtractor={(item) => item.id.toString()}
+      onEndReached={loadMoreMovies}
     />
   );
 };

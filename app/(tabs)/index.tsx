@@ -4,7 +4,7 @@ import { fetchMovies, searchMovies, getGenre } from '../services/api';
 import SearchBar from '../components/SearchBar';
 import MovieList from '../components/MovieList';
 import { getFavorites, saveGenreList } from '../storage/storage';
-import {getUniqueMovies} from '../utils/utils';
+import { getUniqueMovies } from '../utils/utils';
 
 const MovieListScreen = () => {
   const [movies, setMovies] = useState([]);
@@ -30,30 +30,30 @@ const MovieListScreen = () => {
 
   // Fetch movies from the API
   const fetchMoviesList = async () => {
-   
+
     setLoading(true);
     try {
-      console.log('fetchMovies',page);
+      console.log('fetchMovies', page);
       const data = await fetchMovies(page); // Pass the page number
-      console.log('new data',data);
+      console.log('new data', data);
       if (data.results) {
         setMovies((prevMovies) => {
           // Combine previous movies with new results
           const combinedMovies = [...prevMovies, ...data.results];
-          
+
           // Filter out duplicate movies based on 'id'
           const uniqueMovies = getUniqueMovies(combinedMovies);
-          
+
           return uniqueMovies; // Set the state with unique movies only
         });
-        
-        if(data.page < data.total_pages){
+
+        if (data.page < data.total_pages) {
           setHasMore(true);
         }
-        else{
+        else {
           setHasMore(false);
-        } 
-        
+        }
+
       }
     } catch (error) {
       setError('Failed to fetch movies.');
@@ -64,19 +64,17 @@ const MovieListScreen = () => {
 
   // Search for movies
   const searchMoviesList = async (query) => {
-    setLoading(true);
+    //setLoading(true);
     if (query.trim() === "") {
       setMovies([]); // Clear current movies when search is empty
-      fetchMoviesList(pageNum);
-       
+      fetchMoviesList();
     }
-    else{
+    else {
       try {
-           
         const data = await searchMovies(query);
         setMovies(data.results);
       } catch (error) {
-        
+
         setError('Failed to search movies.');
       } finally {
         setLoading(false);
@@ -102,18 +100,18 @@ const MovieListScreen = () => {
     fetchGenreList();
     loadFavorites();
   }, []);
-  
+
   useEffect(() => {
-    
+
     fetchMoviesList(); // Load initial movies
   }, [page]);
 
   const loadMoreMovies = () => {
     console.log('fetchMoviesList page before', page);
-    if(hasMore){
+    if (hasMore) {
       setPage((prevPage) => prevPage + 1);
       console.log('fetchMoviesList page', page);
-    }  
+    }
   };
 
   return (
@@ -125,15 +123,7 @@ const MovieListScreen = () => {
       ) : (
         <>
           <SearchBar input={input} setInput={setInput} searchMoviesList={searchMoviesList} />
-          <FlatList
-            data={movies}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-              <MovieList movies={[item]} favorites={favorites} /> // Render each movie item
-            )}
-            onEndReached={loadMoreMovies} // Trigger when the end of the list is reached
-            onEndReachedThreshold={0.4} // Trigger when the scroll is 50% from the bottom
-          />
+          <MovieList movies={movies} favorites={favorites} loadMoreMovies={loadMoreMovies} />
         </>
       )}
     </View>
