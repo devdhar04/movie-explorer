@@ -19,7 +19,7 @@ export const fetchMovies = async (page) => {
         Accept: 'application/json',
       },
     });
-    return response.data.results;
+    return response.data;
   } catch (error) {
     console.error('Error fetching movies:', error);
     return [];
