@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ActivityIndicator, Text, FlatList } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, Text, Alert } from 'react-native';
 import { fetchMovies, searchMovies, getGenre } from '../services/api';
 import SearchBar from '../components/SearchBar';
 import MovieList from '../components/MovieList';
 import { getFavorites, saveGenreList } from '../storage/storage';
 import { getUniqueMovies } from '../utils/utils';
+
 
 const MovieListScreen = () => {
   const [movies, setMovies] = useState([]);
@@ -14,8 +15,7 @@ const MovieListScreen = () => {
   const [error, setError] = useState(null);
   const [page, setPage] = useState(1); // Current page number
   const [hasMore, setHasMore] = useState(true); // To track if more data is available
-
-
+  
   // Load favorites from AsyncStorage
   const loadFavorites = async () => {
     try {
@@ -30,21 +30,15 @@ const MovieListScreen = () => {
 
   // Fetch movies from the API
   const fetchMoviesList = async () => {
-
+    
     setLoading(true);
     try {
-      console.log('fetchMovies', page);
-      const data = await fetchMovies(page); // Pass the page number
-      console.log('new data', data);
+      const data = await fetchMovies(page);
       if (data.results) {
         setMovies((prevMovies) => {
-          // Combine previous movies with new results
           const combinedMovies = [...prevMovies, ...data.results];
-
-          // Filter out duplicate movies based on 'id'
           const uniqueMovies = getUniqueMovies(combinedMovies);
-
-          return uniqueMovies; // Set the state with unique movies only
+          return uniqueMovies;
         });
 
         if (data.page < data.total_pages) {
@@ -53,10 +47,9 @@ const MovieListScreen = () => {
         else {
           setHasMore(false);
         }
-
       }
     } catch (error) {
-      setError('Failed to fetch movies.');
+      //setError('Failed to fetch movies.');
     } finally {
       setLoading(false);
     }
@@ -66,7 +59,8 @@ const MovieListScreen = () => {
   const searchMoviesList = async (query) => {
     //setLoading(true);
     if (query.trim() === "") {
-      setMovies([]); // Clear current movies when search is empty
+      setMovies([]);
+      setPage(1);
       fetchMoviesList();
     }
     else {
@@ -102,15 +96,12 @@ const MovieListScreen = () => {
   }, []);
 
   useEffect(() => {
-
     fetchMoviesList(); // Load initial movies
   }, [page]);
 
   const loadMoreMovies = () => {
-    console.log('fetchMoviesList page before', page);
     if (hasMore) {
       setPage((prevPage) => prevPage + 1);
-      console.log('fetchMoviesList page', page);
     }
   };
 

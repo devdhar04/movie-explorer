@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, Image, StyleSheet, ScrollView ,Share} from 'react-native';
 import { fetchMovieDetails, getCast } from '../services/api';
 import { useLocalSearchParams } from 'expo-router';
 import LabelValueView from '../components/LabelValueView'
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import {getCSVValues,onShare} from '../utils/utils'
 
 const MovieDetailScreen = ({ route }) => {
   const [movie, setMovie] = useState(null);
@@ -27,6 +29,8 @@ const MovieDetailScreen = ({ route }) => {
     getMovieDetails();
   }, [id]);
 
+  
+
   if (!movie) return <Text>Loading...</Text>;
 
   return (
@@ -37,12 +41,16 @@ const MovieDetailScreen = ({ route }) => {
           source={{ uri: `https://image.tmdb.org/t/p/w500${movie.poster_path}` }}
         />
         <Text style={styles.title}>{movie.title}</Text>
-        <LabelValueView label="Release Date :" value={movie.release_date}/>
-        <LabelValueView label="Rating :" value={movie.vote_average}/>
-        <LabelValueView label="Genres :" value={movie.genres.map((g) => g.name).join(', ')}/>
+        <View style={{ flexDirection: 'row' }} >
+          <LabelValueView label="Release Date :" value={movie.release_date} />
+          <FontAwesome size={24} name="share-alt" onPress={() => onShare(movie, cast)} />
+        </View>
+
+        <LabelValueView label="Rating :" value={movie.vote_average} />
+        <LabelValueView label="Genres :" value={movie.genres.map((g) => g.name).join(', ')} />
         <Text style={styles.description}>{movie.overview}</Text>
-        <LabelValueView label="Cast :" value={cast.slice(0, 5).map((g) => g.name).join(', ')}/>
-        <LabelValueView label="Crew :" value={crew.slice(0, 3).map((g) => g.name).join(', ')} />
+        <LabelValueView label="Cast :" value={getCSVValues(cast,5)} />
+        <LabelValueView label="Crew :" value={getCSVValues(crew,3)} />
       </ScrollView>
     </View>
   );

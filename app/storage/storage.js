@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const STORAGE_KEY = '@favorites';
 const GENRE_KEY = '@genres';
+const MOVIES_KEY = '@movies';
 
 // Get items from AsyncStorage
 export const getFavorites = async () => {
@@ -41,5 +42,27 @@ export const getGenreList = async () => {
   } catch (e) {
     console.error('Error loading Genre List:', e);
     return [];
+  }
+};
+
+// Get items from AsyncStorage
+export const getMoviesList = async (page) => {
+  console.log('get from cache',page);
+  try {
+    const jsonValue = await AsyncStorage.getItem(`${page}`);
+    return jsonValue != null ? JSON.parse(jsonValue) : [];
+  } catch (e) {
+    console.error('Error loading movies list from cache:', e);
+    return [];
+  }
+};
+
+// Save items to AsyncStorage
+export const saveToCache = async (page,response) => {
+  console.log('saveToCache',page);
+  try {
+    await AsyncStorage.setItem(`${page}`, JSON.stringify(response));
+  } catch (e) {
+    console.error('Error saving movies list in cache:', e);
   }
 };

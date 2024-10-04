@@ -72,6 +72,7 @@ const MovieList = ({ movies,loadMoreMovies }) => {
       }}
       keyExtractor={(item) => item.id.toString()}
       onEndReached={loadMoreMovies}
+      onEndReachedThreshold={0.5}
     />
   );
 };

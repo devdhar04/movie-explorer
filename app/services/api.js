@@ -1,4 +1,7 @@
 import axios from 'axios';
+import { saveToCache, getMoviesList } from '../storage/storage';
+import { Alert } from 'react-native';
+import NetInfo from '@react-native-community/netinfo';
 
 const BASE_URL = 'https://api.themoviedb.org/3/movie/';
 
@@ -9,6 +12,20 @@ const GENRE = 'https://api.themoviedb.org/3/genre/movie/list';
 const API_KEY = 'b57c604715a8e06d87277ff9bd889fde';
 
 export const fetchMovies = async (page) => {
+
+  const netInfo = await NetInfo.fetch();
+  
+  if (!netInfo.isConnected && !netInfo.isInternetReachable) {
+    //Alert.alert('Loading from cache '+netInfo.isInternetReachable);
+    
+    const cachedData = await getMoviesList(page);
+    console.log('No internet connection, returning cached data',cachedData);
+    if (cachedData && cachedData.results.length > 0) {
+      return cachedData;
+    } else {
+      return []; // If there's no cached data, return an empty array
+    }
+  }
   try {
     const response = await axios.get(API_URL, {
       params: {
@@ -19,19 +36,22 @@ export const fetchMovies = async (page) => {
         Accept: 'application/json',
       },
     });
+    saveToCache(page, response.data);
     return response.data;
   } catch (error) {
-    console.error('Error fetching movies:', error);
+    const cachedData = await getMoviesList(cacheKey);
+    if (cachedData) {
+      console.log('Network error, returning cached data.');
+      return cachedData;
+    }
     return [];
   }
 };
 
-
-
 export const fetchMovieDetails = async (id) => {
   try {
     const response = await axios.get(`${BASE_URL}/${id}`, {
-     
+
       headers: {
         Authorization: `Bearer ${token}`,
         Accept: 'application/json',
@@ -47,7 +67,7 @@ export const fetchMovieDetails = async (id) => {
 export const searchMovies = async (title) => {
   try {
     const response = await axios.get(`${SEARCH}`, {
-      params: {query: title},
+      params: { query: title },
       headers: {
         Authorization: `Bearer ${token}`,
         Accept: 'application/json',
@@ -78,7 +98,7 @@ export const getGenre = async () => {
 export const getCast = async (movieId) => {
   try {
     const response = await axios.get(`https://api.themoviedb.org/3/movie/${movieId}/credits`, {
-      params: {api_key: API_KEY},
+      params: { api_key: API_KEY },
     });
     return response.data;
   } catch (error) {
