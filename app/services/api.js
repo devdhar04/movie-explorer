@@ -9,6 +9,7 @@ const API_URL = 'https://api.themoviedb.org/3/discover/movie';
 const token = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiNTdjNjA0NzE1YThlMDZkODcyNzdmZjliZDg4OWZkZSIsIm5iZiI6MTcyNzgwMTAwOS41NTg0OTIsInN1YiI6IjU4ZjI2MzBjOTI1MTQxM2Q3MjAwMWMzNSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.rlWnermTu4AENojlJ1Gs77N3g6_umxhFzTQ6qlqIoy4';
 const SEARCH = 'https://api.themoviedb.org/3/search/movie';
 const GENRE = 'https://api.themoviedb.org/3/genre/movie/list';
+const ADD_RATING = 'https://api.themoviedb.org/3/movie';
 const API_KEY = 'b57c604715a8e06d87277ff9bd889fde';
 
 export const fetchMovies = async (page) => {
@@ -103,6 +104,23 @@ export const getCast = async (movieId) => {
     return response.data;
   } catch (error) {
     console.error('Error fetching movie details:', error);
+    return null;
+  }
+};
+
+
+export const addRating = async (movieId) => {
+  try {
+    const response = await axios.post(`https://api.themoviedb.org/3/movie/${movieId}/rating`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+      },
+      data: '{"value":8.5}'
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error Adding Rating:', error);
     return null;
   }
 };

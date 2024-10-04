@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView ,Share} from 'react-native';
+import { View, Text, Image, StyleSheet, ScrollView, Share } from 'react-native';
 import { fetchMovieDetails, getCast } from '../services/api';
 import { useLocalSearchParams } from 'expo-router';
 import LabelValueView from '../components/LabelValueView'
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import {getCSVValues,onShare} from '../utils/utils'
+import { getCSVValues, onShare } from '../utils/utils'
 
 const MovieDetailScreen = ({ route }) => {
   const [movie, setMovie] = useState(null);
@@ -16,12 +16,10 @@ const MovieDetailScreen = ({ route }) => {
   useEffect(() => {
     const getMovieDetails = async () => {
       const data = await fetchMovieDetails(id);
-      console.log('MovieDetail', data);
       setMovie(data);
     };
     const getCastDetails = async () => {
       const data = await getCast(id);
-      console.log('getCastDetails', data.cast);
       setCast(data.cast);
       setCrew(data.crew);
     };
@@ -29,7 +27,7 @@ const MovieDetailScreen = ({ route }) => {
     getMovieDetails();
   }, [id]);
 
-  
+
 
   if (!movie) return <Text>Loading...</Text>;
 
@@ -49,8 +47,8 @@ const MovieDetailScreen = ({ route }) => {
         <LabelValueView label="Rating :" value={movie.vote_average} />
         <LabelValueView label="Genres :" value={movie.genres.map((g) => g.name).join(', ')} />
         <Text style={styles.description}>{movie.overview}</Text>
-        <LabelValueView label="Cast :" value={getCSVValues(cast,5)} />
-        <LabelValueView label="Crew :" value={getCSVValues(crew,3)} />
+        <LabelValueView label="Cast :" value={getCSVValues(cast, 5)} />
+        <LabelValueView label="Crew :" value={getCSVValues(crew, 3)} />
       </ScrollView>
     </View>
   );
