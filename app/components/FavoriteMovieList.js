@@ -1,43 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect ,useContext} from 'react';
 import { FlatList, StyleSheet ,View,Text} from 'react-native';
 import MovieItem from './MovieItem';
-import { saveFavorites, getGenreList } from '../storage/storage';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getGenreList } from '../storage/storage';
+import { FavouritesContext } from '../screens/favourites/FavouritesContext'; 
 
-const FavoriteMovieList = ({ movies }) => {
-  const [favorites, setFavorites] = useState([]);
+const FavoriteMovieList = ({ }) => {
   const [genreList, setGenreList] = useState([]);
-  /*
-    Load favorites from AsyncStorage when the component mounts
-  */
-   const loadFavorites = async () => {
-    try {
-      const jsonValue = await AsyncStorage.getItem('@favorites');
-      if (jsonValue != null) {
-        setFavorites(JSON.parse(jsonValue));
-        console.log('Error loading favorites:', JSON.parse(jsonValue));
-      }
-    } catch (e) {
-      console.error('Error loading favorites:', e);
-    }
-  };
+  const { favourites} = useContext(FavouritesContext);
 
-  /* 
-  Add or remove a movie from favorites
-  */
-  const toggleFavorite = (movie) => {
-    let updatedFavorites = [...favorites];
-    if (favorites.some((fav) => fav.id === movie.id)) {
-      // Remove movie if it's already in favorites
-      updatedFavorites = updatedFavorites.filter((fav) => fav.id !== movie.id);
-    } else {
-      // Add movie to favorites if it's not already
-      updatedFavorites.push(movie);
-    }
-    saveFavorites(updatedFavorites); 
-    loadFavorites();// Update state with the new favorites list
-    // Save updated favorites to AsyncStorage
-  };
 
   /* 
   Load favorites when the component mounts
@@ -46,7 +16,6 @@ const FavoriteMovieList = ({ movies }) => {
     getGenreList().then((storedGenres) => {
       setGenreList(storedGenres); // Will log the array of genres
     });
-    loadFavorites();
   }, []);
 
   const renderEmptyList = () => (
@@ -57,16 +26,12 @@ const FavoriteMovieList = ({ movies }) => {
   
   return (
     <FlatList
-      data={favorites}
+      data={favourites}
       ListEmptyComponent={renderEmptyList}
       renderItem={({ item }) => {
-        // Check if movie is in favorites
-        const isFavorite = favorites.some((fav) => fav.id === item.id);
         return (
           <MovieItem
             movie={item}
-            isFavorite={isFavorite} // Pass favorite status to child component
-            onPress={() => toggleFavorite(item)} // Pass toggle function to child component
             genres = {genreList}
           />
         );

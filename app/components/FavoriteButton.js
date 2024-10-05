@@ -1,12 +1,26 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { FavouritesContext } from '../screens/favourites/FavouritesContext';
 
-const FavoriteButton = ({ isFavorite, onPress }) => {
+const FavoriteButton = ({movie}) => {
+  
+  const { favourites, addToFavourites, removeFromFavourites } = useContext(FavouritesContext);
+  
+  const isFavourite = favourites.find(
+    (res) => res.id === movie.id
+  );
+
   return (
-    <TouchableOpacity onPress={onPress}>
+    
+    <TouchableOpacity onPress={() =>
+      !isFavourite
+        ? addToFavourites(movie)
+        : removeFromFavourites(movie)
+    }>
+      {console.log('isFavourite',favourites)}
       <Image
         source={
-          isFavorite
+          isFavourite
             ? require('../../assets/images/favourite_on.png')  // "Favorite" icon
             : require('../../assets/images/favourite_off.png') // "Not favorite" icon
         }

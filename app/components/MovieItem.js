@@ -4,13 +4,13 @@ import { Link } from 'expo-router';
 import FavoriteButton from './FavoriteButton';
 import { getGenreNamesById } from '../utils/utils';
 
-const MovieItem = ({ movie, isFavorite, onPress, genres }) => {
+const MovieItem = ({ movie, genres }) => {
 
   const [genreList, setGenreList] = useState([]);
 
   useEffect(() => {
     getGenreNamesById(movie.genre_ids, genres).then((storedGenres) => {
-      setGenreList(storedGenres.slice(0, 3).join(',')); // Will log the array of genres
+      setGenreList(storedGenres.slice(0, 3).join(','));  
     });
   }, []);
 
@@ -37,7 +37,7 @@ const MovieItem = ({ movie, isFavorite, onPress, genres }) => {
             <Text style={styles.releaseDate}>{movie.release_date}</Text>
             <View style={styles.favouriteContainer}>
               <Text style={styles.releaseDate}>{movie.vote_average}</Text>
-              <FavoriteButton style={styles.fav} isFavorite={isFavorite} onPress={onPress} />
+              <FavoriteButton style={styles.fav} movie = {movie}/>
             </View>
             
             <Text style={styles.genre}>
