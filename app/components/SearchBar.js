@@ -1,16 +1,13 @@
 import React from 'react';
 import { TextInput, StyleSheet } from 'react-native';
 
-const SearchBar = ({ input, setInput, searchMoviesList }) => {
+const SearchBar = ({ value,onChangeText }) => {
   return (
     <TextInput
       style={styles.searchInput}
       placeholder="Search Movies"
-      value={input}
-      onChangeText={(text) => {
-        setInput(text);
-        searchMoviesList(text);
-      }}
+      value={value}
+      onChangeText={onChangeText}
     />
   );
 };

@@ -15,12 +15,12 @@ const API_KEY = 'b57c604715a8e06d87277ff9bd889fde';
 export const fetchMovies = async (page) => {
 
   const netInfo = await NetInfo.fetch();
-  
+
   if (!netInfo.isConnected && !netInfo.isInternetReachable) {
     //Alert.alert('Loading from cache '+netInfo.isInternetReachable);
-    
+
     const cachedData = await getMoviesList(page);
-    console.log('No internet connection, returning cached data',cachedData);
+    console.log('No internet connection, returning cached data', cachedData);
     if (cachedData && cachedData.results.length > 0) {
       return cachedData;
     } else {
@@ -65,10 +65,13 @@ export const fetchMovieDetails = async (id) => {
   }
 };
 
-export const searchMovies = async (title) => {
+export const searchMovies = async (title, page) => {
   try {
     const response = await axios.get(`${SEARCH}`, {
-      params: { query: title },
+      params: {
+        query: title,
+        page: page
+      },
       headers: {
         Authorization: `Bearer ${token}`,
         Accept: 'application/json',

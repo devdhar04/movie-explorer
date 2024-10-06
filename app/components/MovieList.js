@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FlatList, StyleSheet ,View,Text} from 'react-native';
 import MovieItem from './MovieItem';
 import { saveFavorites, getGenreList } from '../storage/storage';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { FavouritesContext } from '../screens/favourites/FavouritesContext'; 
 
 const MovieList = ({ movies,loadMoreMovies }) => {
   const [genreList, setGenreList] = useState([]);
