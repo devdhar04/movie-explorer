@@ -10,7 +10,7 @@ const MovieItem = ({ movie, genres }) => {
 
   useEffect(() => {
     getGenreNamesById(movie.genre_ids, genres).then((storedGenres) => {
-      setGenreList(storedGenres.slice(0, 3).join(','));  
+    setGenreList(storedGenres);  
     });
   }, []);
 

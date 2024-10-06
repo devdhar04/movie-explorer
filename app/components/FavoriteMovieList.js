@@ -1,22 +1,13 @@
-import React, { useState, useEffect ,useContext} from 'react';
+import React, {useContext} from 'react';
 import { FlatList, StyleSheet ,View,Text} from 'react-native';
 import MovieItem from './MovieItem';
-import { getGenreList } from '../storage/storage';
 import { FavouritesContext } from '../screens/favourites/FavouritesContext'; 
+import {MoviesContext} from '../screens/movies/MoviesContext';
 
 const FavoriteMovieList = ({ }) => {
-  const [genreList, setGenreList] = useState([]);
   const { favourites} = useContext(FavouritesContext);
 
-
-  /* 
-  Load favorites when the component mounts
-  */
-  useEffect(() => {
-    getGenreList().then((storedGenres) => {
-      setGenreList(storedGenres); // Will log the array of genres
-    });
-  }, []);
+  const { genres} = useContext(MoviesContext);
 
   const renderEmptyList = () => (
     <View style={styles.emptyContainer}>
@@ -32,7 +23,7 @@ const FavoriteMovieList = ({ }) => {
         return (
           <MovieItem
             movie={item}
-            genres = {genreList}
+            genres = {genres}
           />
         );
       }}

@@ -1,11 +1,12 @@
 import {Share} from 'react-native';
 
 export const getGenreNamesById = async (genreIds,genres) => {
+  const genreNames =  genreIds.map(id => {
 
-  return genreIds.map(id => {
     const genre = genres.find(genre => genre.id === id);
     return genre ? genre.name : null;
   }).filter(name => name);  // Filter out null values if any genre is not found
+  return genreNames.join(', '); 
 };
 
 export const getUniqueMovies = (movies) => {
