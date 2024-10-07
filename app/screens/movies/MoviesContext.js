@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { getGenre } from '../../services/api';
+import { fetchGenres } from '../../services/api';
 import { saveGenreList } from '../../storage/storage';
 
 export const MoviesContext = createContext();
@@ -12,7 +12,7 @@ export const MoviesContextProvider = ({ children }) => {
   */
   const fetchGenreList = async () => {
     try {
-      const data = await getGenre();
+      const data = await fetchGenres();
       if (data && data.genres) {
         await saveGenreList(data.genres); 
         setGenre(data.genres); 

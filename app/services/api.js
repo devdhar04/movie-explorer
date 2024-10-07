@@ -1,129 +1,123 @@
 import axios from 'axios';
+import NetInfo from '@react-native-community/netinfo';
 import { saveToCache, getMoviesList } from '../storage/storage';
 import { Alert } from 'react-native';
-import NetInfo from '@react-native-community/netinfo';
+import { API_CONFIG } from './apiConfig'; // Import the API config
 
-const BASE_URL = 'https://api.themoviedb.org/3/movie/';
-
-const API_URL = 'https://api.themoviedb.org/3/discover/movie';
-const token = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiNTdjNjA0NzE1YThlMDZkODcyNzdmZjliZDg4OWZkZSIsIm5iZiI6MTcyNzgwMTAwOS41NTg0OTIsInN1YiI6IjU4ZjI2MzBjOTI1MTQxM2Q3MjAwMWMzNSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.rlWnermTu4AENojlJ1Gs77N3g6_umxhFzTQ6qlqIoy4';
-const SEARCH = 'https://api.themoviedb.org/3/search/movie';
-const GENRE = 'https://api.themoviedb.org/3/genre/movie/list';
-const ADD_RATING = 'https://api.themoviedb.org/3/movie';
-const API_KEY = 'b57c604715a8e06d87277ff9bd889fde';
-
-export const fetchMovies = async (page) => {
-
-  const netInfo = await NetInfo.fetch();
-
-  if (!netInfo.isConnected && !netInfo.isInternetReachable) {
-    //Alert.alert('Loading from cache '+netInfo.isInternetReachable);
-
-    const cachedData = await getMoviesList(page);
-    console.log('No internet connection, returning cached data', cachedData);
-    if (cachedData && cachedData.results.length > 0) {
-      return cachedData;
-    } else {
-      return []; // If there's no cached data, return an empty array
-    }
+// Centralized error handling
+const handleError = (error) => {
+  if (error.response) {
+    console.error('Server Error:', error.response.data);
+    Alert.alert('Error', error.response.data?.message || 'Server error occurred.');
+  } else if (error.request) {
+    console.error('Network Error:', error.message);
+    Alert.alert('Network Error', 'Please check your internet connection.');
+  } else {
+    console.error('Unexpected Error:', error.message);
+    Alert.alert('Error', 'An unexpected error occurred.');
   }
+};
+
+// Fetch from API with error handling
+const fetchFromAPI = async (url, params = {}) => {
   try {
-    const response = await axios.get(API_URL, {
-      params: {
-        page: page,
-      },
+    const response = await axios.get(`${API_CONFIG.BASE_URL}${url}`, {
       headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: 'application/json',
+        Authorization: API_CONFIG.HEADERS.AUTHORIZATION,
+        Accept: API_CONFIG.HEADERS.ACCEPT,
       },
+      params,
     });
-    saveToCache(page, response.data);
     return response.data;
   } catch (error) {
-    const cachedData = await getMoviesList(cacheKey);
-    if (cachedData) {
-      console.log('Network error, returning cached data.');
-      return cachedData;
-    }
-    return [];
+    handleError(error);
+    throw error;
   }
+};
+
+// Cache handler with error fallback
+const fetchWithCache = async (page, cacheKey, apiFunction) => {
+  const netInfo = await NetInfo.fetch();
+
+  if (!netInfo.isConnected || !netInfo.isInternetReachable) {
+    const cachedData = await getMoviesList(page);
+    if (cachedData?.results?.length > 0) {
+      console.log('No internet, using cached data:', cachedData);
+      return cachedData;
+    } else {
+      Alert.alert('No internet and no cached data available.');
+      return [];
+    }
+  }
+
+  try {
+    const data = await apiFunction();
+    await saveToCache(page, data); // Save fresh data to cache
+    return data;
+  } catch (error) {
+    console.error('API fetch failed. Returning cached data:', error);
+    const cachedData = await getMoviesList(page);
+    return cachedData || [];
+  }
+};
+
+// Movie Fetchers with cache fallback
+export const fetchMovies = async (page) => {
+  return fetchWithCache(page, `movies_page_${page}`, () =>
+    fetchFromAPI(API_CONFIG.ENDPOINTS.DISCOVER, { page })
+  );
 };
 
 export const fetchMovieDetails = async (id) => {
   try {
-    const response = await axios.get(`${BASE_URL}/${id}`, {
-
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: 'application/json',
-      }
-    });
-    return response.data;
+    return await fetchFromAPI(API_CONFIG.ENDPOINTS.MOVIE_DETAILS(id));
   } catch (error) {
-    console.error('Error fetching movie details:', error);
-    return null;
+    return null; // Return null on failure
   }
 };
 
 export const searchMovies = async (title, page) => {
   try {
-    const response = await axios.get(`${SEARCH}`, {
-      params: {
-        query: title,
-        page: page
-      },
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: 'application/json',
-      }
-    });
-    return response.data;
+    return await fetchFromAPI(API_CONFIG.ENDPOINTS.SEARCH_MOVIES, { query: title, page });
   } catch (error) {
-    console.error('Error fetching movie details:', error);
-    return null;
+    return null; // Return null on failure
   }
 };
 
-export const getGenre = async () => {
+// Genre Fetchers
+export const fetchGenres = async () => {
   try {
-    const response = await axios.get(`${GENRE}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: 'application/json',
-      }
-    });
-    return response.data;
+    return await fetchFromAPI(API_CONFIG.ENDPOINTS.GENRE_LIST);
   } catch (error) {
-    console.error('Error fetching movie details:', error);
-    return null;
+    return null; // Return null on failure
   }
 };
 
+// Get Cast with error handling
 export const getCast = async (movieId) => {
   try {
-    const response = await axios.get(`https://api.themoviedb.org/3/movie/${movieId}/credits`, {
-      params: { api_key: API_KEY },
-    });
-    return response.data;
+    return await fetchFromAPI(API_CONFIG.ENDPOINTS.MOVIE_CREDITS(movieId), { api_key: API_CONFIG.API_KEY });
   } catch (error) {
-    console.error('Error fetching movie details:', error);
-    return null;
+    return null; // Return null on failure
   }
 };
 
-
-export const addRating = async (movieId) => {
+// Add Movie Rating with error handling
+export const addRating = async (movieId, rating) => {
   try {
-    const response = await axios.post(`https://api.themoviedb.org/3/movie/${movieId}/rating`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: 'application/json',
-      },
-      data: '{"value":8.5}'
-    });
+    const response = await axios.post(
+      `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.ADD_RATING(movieId)}`,
+      { value: rating },
+      {
+        headers: {
+          Authorization: API_CONFIG.HEADERS.AUTHORIZATION,
+        Accept: API_CONFIG.HEADERS.ACCEPT,
+        },
+      }
+    );
     return response.data;
   } catch (error) {
-    console.error('Error Adding Rating:', error);
-    return null;
+    handleError(error);
+    return null; // Return null on failure
   }
 };
