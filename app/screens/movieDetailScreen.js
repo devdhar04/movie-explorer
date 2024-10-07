@@ -14,8 +14,6 @@ const MovieDetailScreen = ({ route }) => {
   const [crew, setCrew] = useState([]);
   const [isPopupVisible, setPopupVisible] = useState(false);
 
-  const navigation = useNavigation();
-  
   const { id ,title} = useLocalSearchParams();
 
   const openPopup = () => {
@@ -29,7 +27,6 @@ const MovieDetailScreen = ({ route }) => {
    
 
   useEffect(() => {
-    navigation.setOptions({ title: 'Updated!' })
     const getMovieDetails = async () => {
       const data = await fetchMovieDetails(id);
       setMovie(data);
@@ -57,7 +54,7 @@ const MovieDetailScreen = ({ route }) => {
         <Text style={styles.title}>{movie.title}</Text>
         <View style={{ flexDirection: 'row' }} >
           <LabelValueView label="Release Date :" value={movie.release_date} />
-          <FontAwesome size={18} name="share-alt-square" onPress={() => onShare(movie, cast)} />
+          <FontAwesome size={24} name="share-alt-square" onPress={() => onShare(movie, cast)} style={{marginTop:2}} color={'#5dade2'}/>
         </View>
         <RatingPopup
           movieId={movie.id}

@@ -8,7 +8,6 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
-          
           tabBarIcon: ({ color }) => <FontAwesome size={24} name="film" color={color} />,
         }}
       />

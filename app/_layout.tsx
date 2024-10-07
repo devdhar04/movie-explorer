@@ -10,7 +10,7 @@ export default function Layout() {
         <MoviesContextProvider>
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="screens/MovieDetailScreen" />
+          <Stack.Screen name="screens/MovieDetailScreen" options={{title :'Movie Detail'}}/>
         </Stack>
         </MoviesContextProvider>
       </FavouritesContextProvider>

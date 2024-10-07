@@ -19,7 +19,7 @@ const FavoriteButton = ({ movie }) => {
         : removeFromFavourites(movie)
     }>
       {isFavourite ? 
-      <FontAwesome size={24} name="heart" /> : <FontAwesome size={24} name="heart-o" /> }
+      <FontAwesome size={24} name="heart" color={'#c0392b'}/> : <FontAwesome size={24} name="heart-o" /> }
     </TouchableOpacity>
   );
 };
