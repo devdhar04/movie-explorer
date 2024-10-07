@@ -1,14 +1,14 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet,TouchableOpacity } from 'react-native';
 
-export default function LabelValueView({ label, value }) {
+export default function LabelValueView({ label, value ,onPress}) {
   return (
-    <View style={styles.container}>
-      {/* Label */}
+    <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
+    <View style={styles.container} >
       <Text style={styles.label}>{label}</Text>
-      {/* Value */}
       <Text style={styles.value}>{value}</Text>
     </View>
+    </TouchableOpacity>
   );
 }
 

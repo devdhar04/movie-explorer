@@ -103,7 +103,7 @@ export const getCast = async (movieId) => {
 };
 
 // Add Movie Rating with error handling
-export const addRating = async (movieId, rating) => {
+export const postRating = async (movieId, rating) => {
   try {
     const response = await axios.post(
       `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.ADD_RATING(movieId)}`,
@@ -111,13 +111,31 @@ export const addRating = async (movieId, rating) => {
       {
         headers: {
           Authorization: API_CONFIG.HEADERS.AUTHORIZATION,
-        Accept: API_CONFIG.HEADERS.ACCEPT,
+          Accept: API_CONFIG.HEADERS.ACCEPT,
         },
       }
     );
-    return response.data;
+
+    // Check if the response status indicates success
+    if (response.status == 201) {
+      Alert.alert('Success', 'Rating Updated .');
+      return {
+        success: true,
+        data: response.data,
+      };
+    } else {
+      // If the status code is not in the 2xx range, handle it as a failure
+      return {
+        success: false,
+        message: `Unexpected response status: ${response.status}`,
+        data: response.data,
+      };
+    }
   } catch (error) {
     handleError(error);
-    return null; // Return null on failure
+    return {
+      success: false,
+      message: error.message || 'An error occurred while posting the rating.',
+    };
   }
 };

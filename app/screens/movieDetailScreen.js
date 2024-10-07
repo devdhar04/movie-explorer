@@ -1,17 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, Share } from 'react-native';
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { fetchMovieDetails, getCast } from '../services/api';
 import { useLocalSearchParams } from 'expo-router';
 import LabelValueView from '../components/LabelValueView'
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { getCSVValues, onShare } from '../utils/utils'
+import RatingPopup from '../components/RatingView';
+import RatingButton from '../components/RatingButton';
 
 const MovieDetailScreen = ({ route }) => {
   const [movie, setMovie] = useState(null);
   const [cast, setCast] = useState([]);
   const [crew, setCrew] = useState([]);
+  const [isPopupVisible, setPopupVisible] = useState(false);
 
-  const { id, title, releaseYear } = useLocalSearchParams();
+
+  const { id } = useLocalSearchParams();
+
+  const openPopup = () => {
+    setPopupVisible(true);
+  };
+
+  const closePopup = () => {
+    setPopupVisible(false);
+  };
 
   useEffect(() => {
     const getMovieDetails = async () => {
@@ -28,8 +40,8 @@ const MovieDetailScreen = ({ route }) => {
   }, [id]);
 
 
-
-  if (!movie) return <Text>Loading...</Text>;
+  if (!movie)
+    return <Text>Loading...</Text>;
 
   return (
     <View style={styles.container}>
@@ -43,8 +55,16 @@ const MovieDetailScreen = ({ route }) => {
           <LabelValueView label="Release Date :" value={movie.release_date} />
           <FontAwesome size={24} name="share-alt" onPress={() => onShare(movie, cast)} />
         </View>
+        <RatingPopup
+          movieId={movie.id}
+          isVisible={isPopupVisible}
+          onClose={closePopup}
+        />
+        <View style={{ flexDirection: 'row' }} >
+          <LabelValueView label="Rating :" value={movie.vote_average} />
+          <RatingButton onPress={openPopup}/>
+        </View>
 
-        <LabelValueView label="Rating :" value={movie.vote_average} />
         <LabelValueView label="Genres :" value={movie.genres.map((g) => g.name).join(', ')} />
         <Text style={styles.description}>{movie.overview}</Text>
         <LabelValueView label="Cast :" value={getCSVValues(cast, 5)} />
