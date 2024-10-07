@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { fetchMovieDetails, getCast } from '../services/api';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams,useNavigation } from 'expo-router';
 import LabelValueView from '../components/LabelValueView'
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { getCSVValues, onShare } from '../utils/utils'
@@ -14,8 +14,9 @@ const MovieDetailScreen = ({ route }) => {
   const [crew, setCrew] = useState([]);
   const [isPopupVisible, setPopupVisible] = useState(false);
 
-
-  const { id } = useLocalSearchParams();
+  const navigation = useNavigation();
+  
+  const { id ,title} = useLocalSearchParams();
 
   const openPopup = () => {
     setPopupVisible(true);
@@ -25,7 +26,10 @@ const MovieDetailScreen = ({ route }) => {
     setPopupVisible(false);
   };
 
+   
+
   useEffect(() => {
+    navigation.setOptions({ title: 'Updated!' })
     const getMovieDetails = async () => {
       const data = await fetchMovieDetails(id);
       setMovie(data);
@@ -53,7 +57,7 @@ const MovieDetailScreen = ({ route }) => {
         <Text style={styles.title}>{movie.title}</Text>
         <View style={{ flexDirection: 'row' }} >
           <LabelValueView label="Release Date :" value={movie.release_date} />
-          <FontAwesome size={24} name="share-alt" onPress={() => onShare(movie, cast)} />
+          <FontAwesome size={18} name="share-alt-square" onPress={() => onShare(movie, cast)} />
         </View>
         <RatingPopup
           movieId={movie.id}
@@ -62,7 +66,7 @@ const MovieDetailScreen = ({ route }) => {
         />
         <View style={{ flexDirection: 'row' }} >
           <LabelValueView label="Rating :" value={movie.vote_average} />
-          <RatingButton onPress={openPopup}/>
+          <RatingButton onPress={openPopup} />
         </View>
 
         <LabelValueView label="Genres :" value={movie.genres.map((g) => g.name).join(', ')} />
