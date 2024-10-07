@@ -14,7 +14,6 @@ export const SearchContextProvider = ({ children }) => {
     const [hasMore, setHasMore] = useState(true);
 
     const onSearch = (searchKeyword) => {
-        //setIsLoading(true);
         setKeyword(searchKeyword);
     };
 
@@ -62,7 +61,6 @@ export const SearchContextProvider = ({ children }) => {
                 .then((result) => {
                     setError(null);
                     if (result) {
-
                         if (page == 1) {
                             setMovies(result.results);
                         } else {
@@ -77,7 +75,7 @@ export const SearchContextProvider = ({ children }) => {
                     }
                 })
                 .catch((err) => {
-                    //setError(err);
+                    setError(err);
                 })
                 .finally(() => {
                     setIsLoading(false);

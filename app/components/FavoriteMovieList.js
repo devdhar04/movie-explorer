@@ -5,8 +5,8 @@ import { FavouritesContext } from '../screens/favourites/FavouritesContext';
 import {MoviesContext} from '../screens/movies/MoviesContext';
 
 const FavoriteMovieList = ({ }) => {
+  
   const { favourites} = useContext(FavouritesContext);
-
   const { genres} = useContext(MoviesContext);
 
   const renderEmptyList = () => (
@@ -33,7 +33,10 @@ const FavoriteMovieList = ({ }) => {
 };
 
 const styles = StyleSheet.create({
-  // You can add styles specific to MovieList here
+  emptyContainer : {
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
 });
 
 export default FavoriteMovieList;

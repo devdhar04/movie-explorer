@@ -1,5 +1,11 @@
 import {Share} from 'react-native';
 
+/**
+ * Retrieves genre names based on an array of genre IDs and a list of available genres.
+ * @param {Array<number>} genreIds - An array of genre IDs.
+ * @param {Array<Object>} genres - A list of genre objects, each containing an `id` and `name`.
+ * @returns {Promise<string>} A string of genre names separated by commas.
+ */
 export const getGenreNamesById = async (genreIds,genres) => {
   const genreNames =  genreIds.map(id => {
 
@@ -9,6 +15,11 @@ export const getGenreNamesById = async (genreIds,genres) => {
   return genreNames.join(', '); 
 };
 
+/**
+ * Filters out duplicate movies from the provided array based on unique movie IDs.
+ * @param {Array<Object>} movies - An array of movie objects, each containing an `id`.
+ * @returns {Array<Object>} A filtered array containing only unique movies.
+ */
 export const getUniqueMovies = (movies) => {
   const uniqueMovies = [];
   const movieIds = new Set();
@@ -23,11 +34,23 @@ export const getUniqueMovies = (movies) => {
   return uniqueMovies;
 };
 
+/**
+ * Generates a comma-separated string of values (e.g., names) from an array.
+ * @param {Array<Object>} array - An array of objects that contain a `name` property.
+ * @param {number} sliceIndex - The number of elements to take from the array.
+ * @returns {string} A comma-separated string of the names from the sliced array.
+ */
 export const getCSVValues = (array,sliceIndex) => {
 
   return array.slice(0, sliceIndex).map((g) => g.name).join(', ')
 }
 
+/**
+ * Shares a movie's details including title, overview, and cast via the native share functionality.
+ * @param {Object} movie - The movie object containing the movie details.
+ * @param {Array<Object>} cast - An array of cast members, each containing a `name`.
+ * @returns {Promise<void>} Initiates the share functionality with the movie's message.
+ */
 export const onShare = async (movie,cast) => {
   try {
     const result = await Share.share({

@@ -7,7 +7,7 @@ import {SearchContext} from '../screens/search/SearchContext';
 const MovieListScreen = () => {
   const [input, setInput] = useState("");
   
-  const [page, setPage] = useState(1); // Current page number
+  const [page, setPage] = useState(1);  
   
   const { isLoading, movies, search, error ,loadMoreMovies} = useContext(SearchContext);
    
@@ -19,7 +19,7 @@ const MovieListScreen = () => {
 
   return (
     <View style={styles.container}>
-      {isLoading && page === 1 ? ( // Show loading indicator only on first load
+      {isLoading && page === 1 ? ( 
         <ActivityIndicator size="large" color="#0000ff" />
       ) : error ? (
         <Text style={styles.error}>{error}</Text>

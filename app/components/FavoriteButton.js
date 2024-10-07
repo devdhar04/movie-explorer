@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { FavouritesContext } from '../screens/favourites/FavouritesContext';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 const FavoriteButton = ({ movie }) => {
 
@@ -17,14 +18,8 @@ const FavoriteButton = ({ movie }) => {
         ? addToFavourites(movie)
         : removeFromFavourites(movie)
     }>
-      <Image
-        source={
-          isFavourite
-            ? require('../../assets/images/favourite_on.png')  // "Favorite" icon
-            : require('../../assets/images/favourite_off.png') // "Not favorite" icon
-        }
-        style={styles.icon}
-      />
+      {isFavourite ? 
+      <FontAwesome size={24} name="heart" /> : <FontAwesome size={24} name="heart-o" /> }
     </TouchableOpacity>
   );
 };
