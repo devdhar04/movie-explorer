@@ -1,20 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { fetchMovieDetails, getCast } from '../services/api';
-import { useLocalSearchParams ,useNavigation} from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import LabelValueView from '../components/LabelValueView'
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { getCSVValues, onShare } from '../utils/utils'
 import RatingPopup from '../components/RatingView';
 import RatingButton from '../components/RatingButton';
+import MovieCarousel from '../components/MovieCarousel'
 
-const MovieDetailScreen = ({ route }) => {
+const MovieDetailScreen = ({ }) => {
   const [movie, setMovie] = useState(null);
   const [cast, setCast] = useState([]);
   const [crew, setCrew] = useState([]);
   const [isPopupVisible, setPopupVisible] = useState(false);
 
-  const { id, title, releaseYear, item } = useLocalSearchParams();
+  const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
+
+  const imagePaths = [
+    `${IMAGE_BASE_URL}${movie?.poster_path}`,
+    `${IMAGE_BASE_URL}${movie?.backdrop_path}`
+];
+
+  const { id,item } = useLocalSearchParams();
 
   const openPopup = () => {
     setPopupVisible(true);
@@ -35,6 +43,7 @@ const MovieDetailScreen = ({ route }) => {
       }
     }
   }
+  
 
   useEffect(() => {
   
@@ -59,10 +68,7 @@ const MovieDetailScreen = ({ route }) => {
   return (
     <View style={styles.container}>
       <ScrollView>
-        <Image
-          style={styles.poster}
-          source={{ uri: `https://image.tmdb.org/t/p/w500${movie?.poster_path}` }}
-        />
+        <MovieCarousel movie={imagePaths}/>
         <Text style={styles.title}>{movie?.title}</Text>
         <View style={{ flexDirection: 'row' }} >
           <LabelValueView label="Release Date :" value={movie?.release_date} />

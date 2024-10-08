@@ -19,18 +19,11 @@ const MovieListScreen = () => {
 
   return (
     <View style={styles.container}>
-      {isLoading && page === 1 ? ( 
-        <ActivityIndicator size="large" color="#0000ff" />
-      ) : error ? (
-        <Text style={styles.error}>{error}</Text>
-      ) : (
-        <>
+      
           <SearchBar
            value={input}
            onChangeText={handleSearch} />
           <MovieList movies={movies} loadMoreMovies={loadMoreMovies} />
-        </>
-      )}
     </View>
   );
 };

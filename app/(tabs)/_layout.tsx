@@ -12,7 +12,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="favouriteListScreen"
+        name="FavoriteMovieList"
         options={{
           title: 'Favourite',
           unmountOnBlur: true,
