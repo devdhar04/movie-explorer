@@ -19,7 +19,13 @@ export const FavouritesContextProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    loadFavourites();
+    loadFavourites() .then((result) => {
+      setFavourites(result);
+    })
+    .catch((error) => {
+      console.error(error); // Handle errors if the Promise rejects
+    });
+    
   }, []);
 
   useEffect(() => {

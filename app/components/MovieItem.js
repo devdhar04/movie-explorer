@@ -25,7 +25,8 @@ const MovieItem = ({ movie, genres }) => {
             params: {
               id: movie.id,
               title: movie.title,
-              releaseYear: movie.release_year
+              releaseYear: movie.release_year,
+              item: JSON.stringify(movie)
             },
           }}
         >

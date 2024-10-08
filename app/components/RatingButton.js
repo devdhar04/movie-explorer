@@ -2,7 +2,7 @@ import React from 'react';
 import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-const RatingButton = ({ onPress, title = 'Add Rating', iconSize = 20 }) => {
+const RatingButton = ({ onPress, title = 'Rate', iconSize = 20 }) => {
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
       <View style={styles.ratingContainer}>

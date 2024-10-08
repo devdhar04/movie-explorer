@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, ScrollView } from 'react-native';
 import { fetchMovieDetails, getCast } from '../services/api';
-import { useLocalSearchParams,useNavigation } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import LabelValueView from '../components/LabelValueView'
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { getCSVValues, onShare } from '../utils/utils'
@@ -14,7 +14,7 @@ const MovieDetailScreen = ({ route }) => {
   const [crew, setCrew] = useState([]);
   const [isPopupVisible, setPopupVisible] = useState(false);
 
-  const { id ,title} = useLocalSearchParams();
+  const { id, title, releaseYear, item } = useLocalSearchParams();
 
   const openPopup = () => {
     setPopupVisible(true);
@@ -24,52 +24,62 @@ const MovieDetailScreen = ({ route }) => {
     setPopupVisible(false);
   };
 
-   
+  const loadDataFromPreviousScreen = () => {
+    if (item) {
+      try {
+        const parsedMovie = JSON.parse(item);
+        setMovie(parsedMovie);
+       
+      } catch (error) {
+        console.error('Error parsing movieDetails:', error);
+      }
+    }
+  }
 
   useEffect(() => {
+    loadDataFromPreviousScreen();
     const getMovieDetails = async () => {
       const data = await fetchMovieDetails(id);
-      setMovie(data);
+      
+        console.log('from Api parsing movieDetails:');
+        setMovie(data);
     };
     const getCastDetails = async () => {
       const data = await getCast(id);
-      setCast(data.cast);
-      setCrew(data.crew);
+      setCast(data?.cast);
+      setCrew(data?.crew);
     };
     getCastDetails();
     getMovieDetails();
   }, [id]);
 
 
-  if (!movie)
-    return <Text>Loading...</Text>;
-
   return (
     <View style={styles.container}>
       <ScrollView>
         <Image
           style={styles.poster}
-          source={{ uri: `https://image.tmdb.org/t/p/w500${movie.poster_path}` }}
+          source={{ uri: `https://image.tmdb.org/t/p/w500${movie?.poster_path}` }}
         />
-        <Text style={styles.title}>{movie.title}</Text>
+        <Text style={styles.title}>{movie?.title}</Text>
         <View style={{ flexDirection: 'row' }} >
-          <LabelValueView label="Release Date :" value={movie.release_date} />
-          <FontAwesome size={24} name="share-alt-square" onPress={() => onShare(movie, cast)} style={{marginTop:2}} color={'#5dade2'}/>
+          <LabelValueView label="Release Date :" value={movie?.release_date} />
+          {/* <FontAwesome size={24} name="share-alt-square" onPress={() => onShare(movie, cast)} style={{ marginTop: 2 }} color={'#5dade2'} /> */}
         </View>
         <RatingPopup
-          movieId={movie.id}
+          movieId={movie?.id}
           isVisible={isPopupVisible}
           onClose={closePopup}
         />
         <View style={{ flexDirection: 'row' }} >
-          <LabelValueView label="Rating :" value={movie.vote_average} />
+          <LabelValueView label="Rating :" value={movie?.vote_average} />
           <RatingButton onPress={openPopup} />
         </View>
+        {movie?.genres && <LabelValueView label="Genres :" value={movie?.genres.map((g) => g.name).join(', ')} />}
 
-        <LabelValueView label="Genres :" value={movie.genres.map((g) => g.name).join(', ')} />
-        <Text style={styles.description}>{movie.overview}</Text>
-        <LabelValueView label="Cast :" value={getCSVValues(cast, 5)} />
-        <LabelValueView label="Crew :" value={getCSVValues(crew, 3)} />
+        <Text style={styles.description}>{movie?.overview}</Text>
+        {cast && <LabelValueView label="Cast :" value={getCSVValues(cast, 5)} />}
+        {crew &&  <LabelValueView label="Crew :" value={getCSVValues(crew, 3)} />}
       </ScrollView>
     </View>
   );
@@ -82,8 +92,8 @@ const styles = StyleSheet.create({
   info: { fontSize: 16, marginBottom: 5 },
   description: { fontSize: 14, color: 'gray' },
   labelContainer: {
-    flexDirection: 'row', // Align label and value in a row
-    marginVertical: 10,   // Space between each label-value pair
+    flexDirection: 'row',
+    marginVertical: 10,
   },
 });
 
