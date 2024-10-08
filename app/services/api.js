@@ -1,20 +1,17 @@
 import axios from 'axios';
 import NetInfo from '@react-native-community/netinfo';
 import { saveToCache, getMoviesList } from '../storage/storage';
-import { Alert } from 'react-native';
+import { Alert,ToastAndroid } from 'react-native';
 import { API_CONFIG } from './apiConfig'; // Import the API config
 
 // Centralized error handling
 const handleError = (error) => {
   if (error.response) {
-    console.error('Server Error:', error.response.data);
-    Alert.alert('Error', error.response.data?.message || 'Server error occurred.');
+    console.log('Server Error:', error.response.data);
   } else if (error.request) {
-    console.error('Network Error:', error.message);
-    Alert.alert('Network Error', 'Please check your internet connection.');
+    console.log('Network Error:', error.message);
   } else {
-    console.error('Unexpected Error:', error.message);
-    Alert.alert('Error', 'An unexpected error occurred.');
+    console.log('Unexpected Error:', error.message);
   }
 };
 
@@ -36,26 +33,23 @@ const fetchFromAPI = async (url, params = {}) => {
 };
 
 // Cache handler with error fallback
-const fetchWithCache = async (page, cacheKey, apiFunction) => {
+const fetchWithCache = async (page, apiFunction) => {
+ 
   const netInfo = await NetInfo.fetch();
-
   if (!netInfo.isConnected || !netInfo.isInternetReachable) {
     const cachedData = await getMoviesList(page);
     if (cachedData?.results?.length > 0) {
-      console.log('No internet, using cached data:', cachedData);
       return cachedData;
     } else {
-      Alert.alert('No internet and no cached data available.');
       return [];
     }
   }
-
   try {
     const data = await apiFunction();
     await saveToCache(page, data); // Save fresh data to cache
     return data;
   } catch (error) {
-    console.error('API fetch failed. Returning cached data:', error);
+    console.log('API fetch failed. Returning cached data:', error);
     const cachedData = await getMoviesList(page);
     return cachedData || [];
   }
@@ -63,7 +57,7 @@ const fetchWithCache = async (page, cacheKey, apiFunction) => {
 
 // Movie Fetchers with cache fallback
 export const fetchMovies = async (page) => {
-  return fetchWithCache(page, `movies_page_${page}`, () =>
+  return fetchWithCache(page, () =>
     fetchFromAPI(API_CONFIG.ENDPOINTS.DISCOVER, { page })
   );
 };

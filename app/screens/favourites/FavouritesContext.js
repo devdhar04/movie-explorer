@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import {loadFavourites,saveFavourites} from '../../storage/storage'
+import { loadFavourites, saveFavourites } from '../../storage/storage'
 
 export const FavouritesContext = createContext();
 
@@ -19,13 +19,12 @@ export const FavouritesContextProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    loadFavourites() .then((result) => {
+    loadFavourites().then((result) => {
       setFavourites(result);
-    })
-    .catch((error) => {
-      console.error(error); // Handle errors if the Promise rejects
-    });
-    
+    }).catch((error) => {
+        console.log(error);
+      });
+
   }, []);
 
   useEffect(() => {

@@ -64,12 +64,14 @@ export const SearchContextProvider = ({ children }) => {
                         if (page == 1) {
                             setMovies(result.results);
                         } else {
-                            setMovies((prevMovies) => {
-                                const combinedMovies = [...prevMovies, ...result.results];
-                                console.log('result', prevMovies.length, combinedMovies.length);
-                                const uniqueMovies = getUniqueMovies(combinedMovies);
-                                return uniqueMovies;
-                            });
+                            if(result.results){
+                                setMovies((prevMovies) => {
+                                    const combinedMovies = [...prevMovies, ...result.results];
+                                    const uniqueMovies = getUniqueMovies(combinedMovies);
+                                    return uniqueMovies;
+                                });
+                            }
+                            
                         }
                         setPageSize(result.page, result.total_pages);
                     }
