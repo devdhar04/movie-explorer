@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
   },
   genre: {
     flexDirection: 'row',
-    paddingRight: 20
+    width:'70%'
   },
   fav: {
     position: 'absolute', top: 20, right: 10,

@@ -4,7 +4,7 @@ import { fetchMovieDetails, getCast } from '../services/api';
 import { useLocalSearchParams } from 'expo-router';
 import LabelValueView from '../components/LabelValueView'
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { getCSVValues, onShare } from '../utils/utils'
+import { getCSVValues, onShare,convertToPercentage } from '../utils/utils'
 import RatingPopup from '../components/RatingView';
 import RatingButton from '../components/RatingButton';
 import MovieCarousel from '../components/MovieCarousel'
@@ -44,7 +44,6 @@ const MovieDetailScreen = ({ }) => {
     }
   }
   
-
   useEffect(() => {
   
     loadDataFromPreviousScreen();
@@ -67,7 +66,7 @@ const MovieDetailScreen = ({ }) => {
 
   return (
     <View style={styles.container}>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <MovieCarousel movie={imagePaths}/>
         <Text style={styles.title}>{movie?.title}</Text>
         <View style={{ flexDirection: 'row' }} >
@@ -80,9 +79,12 @@ const MovieDetailScreen = ({ }) => {
           onClose={closePopup}
         />
         <View style={{ flexDirection: 'row' }} >
-          <LabelValueView label="Rating :" value={movie?.vote_average} />
+          <LabelValueView label="Rating :" value={convertToPercentage(movie?.vote_average)} />
+          <LabelValueView label="Total Vote :" value={movie?.vote_count} />
           <RatingButton onPress={openPopup} />
         </View>
+        
+
         {movie?.genres && <LabelValueView label="Genres :" value={movie?.genres.map((g) => g.name).join(', ')} />}
 
         <Text style={styles.description}>{movie?.overview}</Text>

@@ -106,3 +106,7 @@ export const buildMovieMessage = (movie, cast, maxCast = 5) => {
 
   return message;
 };
+
+export const convertToPercentage = (num) => {
+  return `${Math.round(num*10)}%`; // Rounds to the nearest whole number and adds a percentage sign
+};

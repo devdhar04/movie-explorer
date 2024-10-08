@@ -29,7 +29,7 @@ const MovieListScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 10 },
+  container: { flex: 1, margin: 5 },
   error: {
     color: 'red',
     textAlign: 'center',

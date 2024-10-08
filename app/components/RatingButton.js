@@ -20,7 +20,10 @@ const styles = StyleSheet.create({
     borderColor: '#FFC300',
     borderWidth: 1,
     borderRadius: 4,
-    padding: 3,
+    paddingLeft: 5,
+    paddingRight: 5,
+    paddingTop:2,
+    paddingBottom:2,
     alignItems: 'center',
   },
   rating: {
