@@ -28,6 +28,7 @@ const MovieDetailScreen = ({ route }) => {
     if (item) {
       try {
         const parsedMovie = JSON.parse(item);
+        console.error('parsedMovie  movieDetails:', parsedMovie);
         setMovie(parsedMovie);
        
       } catch (error) {
@@ -42,7 +43,9 @@ const MovieDetailScreen = ({ route }) => {
       const data = await fetchMovieDetails(id);
       
         console.log('from Api parsing movieDetails:');
-        setMovie(data);
+        if(data){
+          setMovie(data);
+        }
     };
     const getCastDetails = async () => {
       const data = await getCast(id);
