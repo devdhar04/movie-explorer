@@ -1,4 +1,5 @@
 import {Share} from 'react-native';
+import { loadFavourites } from '../storage/storage'
 
 /**
  * Retrieves genre names based on an array of genre IDs and a list of available genres.
@@ -58,8 +59,27 @@ export const onShare = async (movie,cast) => {
     });
     
   } catch (error) {
-    Alert.alert(error.message);
+     
   }
+};
+
+
+export const shareFavouriteMoviesList = async (movies) => {
+  console.log(movies);
+  try {
+    const result = await Share.share({
+      message: buildShareMessage(movies)
+    });
+    
+  } catch (error) {
+    //Alert.alert(error.message);
+  }
+};
+
+const buildShareMessage = (movies) => {
+  return movies
+    .map(movie => `Title: ${movie.title}\nURL: https://www.themoviedb.org/movie/${movie.id}`)
+    .join('\n\n');
 };
 
 /**

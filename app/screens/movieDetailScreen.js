@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView } from 'react-native';
 import { fetchMovieDetails, getCast } from '../services/api';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams ,useNavigation} from 'expo-router';
 import LabelValueView from '../components/LabelValueView'
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { getCSVValues, onShare } from '../utils/utils'
@@ -28,7 +28,6 @@ const MovieDetailScreen = ({ route }) => {
     if (item) {
       try {
         const parsedMovie = JSON.parse(item);
-        console.error('parsedMovie  movieDetails:', parsedMovie);
         setMovie(parsedMovie);
        
       } catch (error) {
@@ -38,11 +37,11 @@ const MovieDetailScreen = ({ route }) => {
   }
 
   useEffect(() => {
+  
     loadDataFromPreviousScreen();
     const getMovieDetails = async () => {
       const data = await fetchMovieDetails(id);
       
-        console.log('from Api parsing movieDetails:');
         if(data){
           setMovie(data);
         }
@@ -67,7 +66,7 @@ const MovieDetailScreen = ({ route }) => {
         <Text style={styles.title}>{movie?.title}</Text>
         <View style={{ flexDirection: 'row' }} >
           <LabelValueView label="Release Date :" value={movie?.release_date} />
-          {/* <FontAwesome size={24} name="share-alt-square" onPress={() => onShare(movie, cast)} style={{ marginTop: 2 }} color={'#5dade2'} /> */}
+         <FontAwesome size={24} name="share-alt-square" onPress={() => onShare(movie, cast)} style={{ marginTop: 2 }} color={'#5dade2'} />
         </View>
         <RatingPopup
           movieId={movie?.id}
