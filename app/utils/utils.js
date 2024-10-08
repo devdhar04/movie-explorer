@@ -1,4 +1,4 @@
-import {Share} from 'react-native';
+import { Share } from 'react-native';
 import { loadFavourites } from '../storage/storage'
 
 /**
@@ -7,13 +7,13 @@ import { loadFavourites } from '../storage/storage'
  * @param {Array<Object>} genres - A list of genre objects, each containing an `id` and `name`.
  * @returns {Promise<string>} A string of genre names separated by commas.
  */
-export const getGenreNamesById = async (genreIds,genres) => {
-  const genreNames =  genreIds.map(id => {
+export const getGenreNamesById = async (genreIds, genres) => {
+  const genreNames = genreIds.map(id => {
 
     const genre = genres.find(genre => genre.id === id);
     return genre ? genre.name : null;
   }).filter(name => name);  // Filter out null values if any genre is not found
-  return genreNames.join(', '); 
+  return genreNames.join(', ');
 };
 
 /**
@@ -41,45 +41,51 @@ export const getUniqueMovies = (movies) => {
  * @param {number} sliceIndex - The number of elements to take from the array.
  * @returns {string} A comma-separated string of the names from the sliced array.
  */
-export const getCSVValues = (array,sliceIndex) => {
+export const getCSVValues = (array, sliceIndex) => {
 
   return array.slice(0, sliceIndex).map((g) => g.name).join(', ')
 }
 
 /**
  * Shares a movie's details including title, overview, and cast via the native share functionality.
- * @param {Object} movie - The movie object containing the movie details.
- * @param {Array<Object>} cast - An array of cast members, each containing a `name`.
+ * @param {Movie} movie - The movie object containing the movie details.
+ * @param {Array<Cast>} cast - An array of cast members, each containing a `name`.
  * @returns {Promise<void>} Initiates the share functionality with the movie's message.
  */
-export const onShare = async (movie,cast) => {
+export const onShare = async (movie, cast) => {
   try {
     const result = await Share.share({
-      message: buildMovieMessage(movie,cast)
+      message: buildMovieMessage(movie, cast)
     });
-    
+
   } catch (error) {
-     
+
   }
 };
 
 
+/**
+ * Shares a Favourite Movies List including title and url via the native share functionality.
+ * @param {Array<Movie>} movies - The movie object containing the movie details.
+ * 
+ * @returns {Promise<void>} Initiates the share functionality .
+ */
 export const shareFavouriteMoviesList = async (movies) => {
   console.log(movies);
   try {
     const result = await Share.share({
-      message: buildShareMessage(movies)
+      message: buildShareMessage(movies),
     });
-    
+
   } catch (error) {
-    //Alert.alert(error.message);
   }
 };
 
 const buildShareMessage = (movies) => {
-  return movies
-    .map(movie => `Title: ${movie.title}\nURL: https://www.themoviedb.org/movie/${movie.id}`)
-    .join('\n\n');
+  return `Favourite Movie List:\n\n` +
+    movies
+      .map(movie => `Title: ${movie.title}\nURL: https://www.themoviedb.org/movie/${movie.id}`)
+      .join('\n\n');
 };
 
 /**
