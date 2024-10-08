@@ -21,7 +21,7 @@ const MovieItem = ({ movie, genres }) => {
         <Link
           style={styles.link}
           href={{
-            pathname: 'screens/MovieDetailScreen',
+            pathname: 'screens/details/MovieDetailScreen',
             params: {
               id: movie.id,
               title: movie.title,

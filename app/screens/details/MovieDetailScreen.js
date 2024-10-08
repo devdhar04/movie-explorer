@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { fetchMovieDetails, getCast } from '../services/api';
+import { fetchMovieDetails, getCast } from '../../services/api';
 import { useLocalSearchParams } from 'expo-router';
-import LabelValueView from '../components/LabelValueView'
+import LabelValueView from '../../components/LabelValueView'
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { getCSVValues, onShare,convertToPercentage } from '../utils/utils'
-import RatingPopup from '../components/RatingView';
-import RatingButton from '../components/RatingButton';
-import MovieCarousel from '../components/MovieCarousel'
+import { getCSVValues, onShare,convertToPercentage } from '../../utils/utils'
+import RatingPopup from '../../components/RatingView';
+import RatingButton from '../../components/RatingButton';
+import MovieCarousel from '../../components/MovieCarousel'
 
 const MovieDetailScreen = ({ }) => {
   const [movie, setMovie] = useState(null);
