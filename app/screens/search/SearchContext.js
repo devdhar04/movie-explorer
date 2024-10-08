@@ -42,13 +42,12 @@ export const SearchContextProvider = ({ children }) => {
                         setPageSize(result.page, result.total_pages);
                     })
                     .catch((err) => {
-                        setError(err);
+                        setError('In Search');
                     })
                     .finally(() => {
                         setIsLoading(false);
                     });
             } else {
-                //setMovies([]);
                 setPage(1);
             }
         
@@ -87,8 +86,7 @@ export const SearchContextProvider = ({ children }) => {
 
     return (
         <SearchContext.Provider
-            value={{ isLoading, error, movies, keyword, search: onSearch, loadMoreMovies: onLoadMore }}
-        >
+            value={{ isLoading, error, movies, keyword, search: onSearch, loadMoreMovies: onLoadMore }}>
             {children}
         </SearchContext.Provider>
     );

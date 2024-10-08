@@ -1,29 +1,36 @@
-import React, { useState,useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, StyleSheet, ActivityIndicator, Text } from 'react-native';
 import SearchBar from '../components/SearchBar';
 import MovieList from '../components/MovieList';
-import {SearchContext} from '../screens/search/SearchContext';
+import { SearchContext } from '../screens/search/SearchContext';
 
 const MovieListScreen = () => {
   const [input, setInput] = useState("");
-  
-  const [page, setPage] = useState(1);  
-  
-  const { isLoading, movies, search, error ,loadMoreMovies} = useContext(SearchContext);
-   
-  
+
+  const { movies, search, error, loadMoreMovies } = useContext(SearchContext);
+
+  const hasError = !!error;
+
   const handleSearch = (text) => {
     setInput(text);
     search(text);
-};
+  };
 
   return (
     <View style={styles.container}>
+
+      <SearchBar
+        value={input}
+        onChangeText={handleSearch} />
+      {hasError && (
+        <View style={styles.emptyContainer}>
+          <Text style={styles.error}>An error occurred: {error}</Text>
+        </View>
+      )}
+      {!hasError && (
+        <MovieList movies={movies} loadMoreMovies={loadMoreMovies} />
+      )}
       
-          <SearchBar
-           value={input}
-           onChangeText={handleSearch} />
-          <MovieList movies={movies} loadMoreMovies={loadMoreMovies} />
     </View>
   );
 };
@@ -35,6 +42,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginVertical: 20,
   },
+  emptyContainer: {
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
 });
 
 export default MovieListScreen;

@@ -31,9 +31,10 @@ const MovieList = ({ movies,loadMoreMovies }) => {
     />
   );
 };
-
 const styles = StyleSheet.create({
-  // You can add styles specific to MovieList here
+  emptyContainer:{
+    alignContent:'center'
+  }
 });
 
 export default MovieList;
