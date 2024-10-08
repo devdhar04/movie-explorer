@@ -4,7 +4,6 @@ import { Link } from 'expo-router';
 import FavoriteButton from './FavoriteButton';
 import { getGenreNamesById } from '../utils/utils';
 
-
 const MovieItem = ({ movie, genres }) => {
 
   const [genreList, setGenreList] = useState([]);
@@ -17,7 +16,7 @@ const MovieItem = ({ movie, genres }) => {
 
   return (
     <TouchableOpacity>
-      <View style={{ backgroundColor: '#f0f0f0', marginBottom: 10, borderRadius: 10, borderColor: '#D3D3D3', elevation: 1, borderWidth: 1 }}>
+      <View style={styles.container}>
         <Link
           style={styles.link}
           href={{
@@ -61,6 +60,7 @@ const MovieItem = ({ movie, genres }) => {
 };
 
 const styles = StyleSheet.create({
+  container:{ backgroundColor: '#f0f0f0', marginBottom: 10, borderRadius: 10, borderColor: '#D3D3D3', elevation: 1, borderWidth: 1 },
   link: { marginBottom: 0 },
   movieItem: { flexDirection: 'row', marginBottom: 10, },
   poster: { width: 100, height: 150, borderRadius: 10 },

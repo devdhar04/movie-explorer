@@ -84,11 +84,10 @@ const MovieDetailScreen = ({ }) => {
           <RatingButton onPress={openPopup} />
         </View>
         
-
         {movie?.genres && <LabelValueView label="Genres :" value={movie?.genres.map((g) => g.name).join(', ')} />}
 
         <Text style={styles.description}>{movie?.overview}</Text>
-        {cast && <LabelValueView label="Cast :" value={getCSVValues(cast, 5)} />}
+        {cast  && <LabelValueView label="Cast :" value={getCSVValues(cast, 5)} />}
         {crew &&  <LabelValueView label="Crew :" value={getCSVValues(crew, 3)} />}
       </ScrollView>
     </View>
