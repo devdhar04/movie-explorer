@@ -1,9 +1,9 @@
-import React, { useState,useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal, Button } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { MoviesContext } from '../screens/movies/MoviesContext';
 
-const RatingView = ({ movieId,isVisible, onClose, onSubmit }) => {
+const RatingView = ({ movieId, isVisible, onClose, onSubmit }) => {
 
     const [selectedRating, setSelectedRating] = useState(0);
     const { postRating } = useContext(MoviesContext);
@@ -13,8 +13,10 @@ const RatingView = ({ movieId,isVisible, onClose, onSubmit }) => {
     };
 
     const handleSubmit = () => {
-        postRating(movieId,selectedRating);
-        onClose(); // Close the modal after submitting
+        if (selectedRating > 0) {
+            postRating(movieId, selectedRating);
+        }
+        onClose();
     };
 
     return (
@@ -24,7 +26,7 @@ const RatingView = ({ movieId,isVisible, onClose, onSubmit }) => {
                     <Text style={styles.title}>Rate this Movie</Text>
 
                     <View style={styles.starContainer}>
-                        {/* Render 10 stars */}
+
                         {Array.from({ length: 10 }).map((_, index) => {
                             const starRating = index + 1;
                             return (

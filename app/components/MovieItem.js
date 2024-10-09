@@ -2,6 +2,7 @@ import React, { useState, useEffect, memo } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { Link } from 'expo-router';
 import FavoriteButton from './FavoriteButton';
+import RatingCircle from './RatingCircle';
 import { getGenreNamesById } from '../utils/utils';
 
 const MovieItem = ({ movie, genres }) => {
@@ -35,13 +36,12 @@ const MovieItem = ({ movie, genres }) => {
               style={styles.poster}
               source={{ uri: `https://image.tmdb.org/t/p/w200${movie.poster_path}` }}
             />
+            <View style={styles.favouriteContainer}>
+              <RatingCircle rating={movie?.vote_average} />
+            </View>
             <View style={styles.info}>
               <Text style={styles.title} numberOfLines={2} ellipsizeMode='tail'>{movie.title}</Text>
               <Text style={styles.releaseDate}>{movie.release_date}</Text>
-              <View style={styles.favouriteContainer}>
-                <Text style={styles.releaseDate}>{movie.vote_average}</Text>
-
-              </View>
 
               <Text style={styles.genre}>
                 {genreList}
@@ -60,7 +60,7 @@ const MovieItem = ({ movie, genres }) => {
 };
 
 const styles = StyleSheet.create({
-  container:{ backgroundColor: '#f0f0f0', marginBottom: 10, borderRadius: 10, borderColor: '#D3D3D3', elevation: 1, borderWidth: 1 },
+  container: { backgroundColor: '#f0f0f0', marginBottom: 10, borderRadius: 10, borderColor: '#D3D3D3', elevation: 1, borderWidth: 1 },
   link: { marginBottom: 0 },
   movieItem: { flexDirection: 'row', marginBottom: 10, },
   poster: { width: 100, height: 150, borderRadius: 10 },
@@ -68,17 +68,14 @@ const styles = StyleSheet.create({
   title: { fontSize: 18, fontWeight: 'bold', width: '65%', paddingRight: 10 },
   releaseDate: { color: 'gray' },
   favouriteContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-
+    position: 'absolute', bottom: 2, left: 2,
   },
   genre: {
     flexDirection: 'row',
-    width:'70%'
+    width: '70%'
   },
   fav: {
     position: 'absolute', top: 20, right: 10,
-
   }
 });
 

@@ -14,16 +14,16 @@ export default function LabelValueView({ label, value ,onPress}) {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row', // Align label and value in a row
-    marginVertical: 5,   // Space between each label-value pair
+    flexDirection: 'row',  
+    marginVertical: 5,    
   },
   label: {
-    fontWeight: 'bold',    // Make the label bold
-    marginRight: 10,       // Space between label and value
-    color: '#333',         // Label color
+    fontWeight: 'bold',    
+    marginRight: 5,       
+    color: '#333',         
   },
   value: {
     color: '#666', 
-    paddingRight: 20,          // Value color
+    paddingRight: 20,        
   },
 });

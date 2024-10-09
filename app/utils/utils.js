@@ -59,7 +59,7 @@ export const onShare = async (movie, cast) => {
     });
 
   } catch (error) {
-
+    console.error('Error in Share',error);
   }
 };
 
@@ -98,11 +98,11 @@ const buildShareMessage = (movies) => {
 export const buildMovieMessage = (movie, cast, maxCast = 5) => {
   // Helper function to get a comma-separated list of cast names, limited by maxCast
   const getCSVValues = (cast, maxCast) => {
-    return cast.slice(0, maxCast).map(member => member.name).join(', ');
+    return cast.slice(0, maxCast).map(member => member?.name).join(', ');
   };
 
   // Build the message
-  const message = `${movie.title}\n\n${movie.overview}\n\nCast: ${getCSVValues(cast, maxCast)}\n\nhttps://image.tmdb.org/t/p/w500${movie.poster_path}`;
+  const message = `${movie?.title}\n\n${movie?.overview}\n\nCast: ${getCSVValues(cast, maxCast)}\n\nhttps://www.themoviedb.org/movie/${movie?.id}`;
 
   return message;
 };

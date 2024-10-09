@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import { FavouritesContext } from '../screens/favourites/FavouritesContext';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
@@ -23,12 +23,5 @@ const FavoriteButton = ({ movie }) => {
     </TouchableOpacity>
   );
 };
-
-const styles = StyleSheet.create({
-  icon: {
-    width: 24,
-    height: 24,
-  },
-});
 
 export default FavoriteButton;

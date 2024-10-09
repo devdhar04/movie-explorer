@@ -4,22 +4,24 @@ import { fetchMovieDetails, getCast } from '../../services/api';
 import { useLocalSearchParams } from 'expo-router';
 import LabelValueView from '../../components/LabelValueView'
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { getCSVValues, onShare,convertToPercentage } from '../../utils/utils'
+import { getCSVValues, onShare } from '../../utils/utils'
 import RatingPopup from '../../components/RatingView';
 import RatingButton from '../../components/RatingButton';
 import MovieCarousel from '../../components/MovieCarousel'
+import RatingCircle from '../../components/RatingCircle'
+import { useNavigation} from 'expo-router';
+import {API_CONFIG} from '../../services/apiConfig'
 
 const MovieDetailScreen = ({ }) => {
   const [movie, setMovie] = useState(null);
   const [cast, setCast] = useState([]);
   const [crew, setCrew] = useState([]);
   const [isPopupVisible, setPopupVisible] = useState(false);
-
-  const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
+  const navigation = useNavigation();
 
   const imagePaths = [
-    `${IMAGE_BASE_URL}${movie?.poster_path}`,
-    `${IMAGE_BASE_URL}${movie?.backdrop_path}`
+    `${API_CONFIG.IMAGE_BASE_URL}${movie?.poster_path}`,
+    `${API_CONFIG.IMAGE_BASE_URL}${movie?.backdrop_path}`
 ];
 
   const { id,item } = useLocalSearchParams();
@@ -45,7 +47,24 @@ const MovieDetailScreen = ({ }) => {
   }
   
   useEffect(() => {
-  
+    const configureShareButton= () =>{
+      navigation.setOptions({
+        headerRight: () => (
+          <FontAwesome
+            name="share-alt-square"
+            size={26}
+            color={'#5dade2'}
+            onPress={() => onShare(movie, cast)}
+            style={{marginRight:10}}
+          />
+        ),
+      });
+    }
+    configureShareButton();
+  }, [movie,cast]);
+
+  useEffect(() => {
+    
     loadDataFromPreviousScreen();
     const getMovieDetails = async () => {
       const data = await fetchMovieDetails(id);
@@ -58,9 +77,11 @@ const MovieDetailScreen = ({ }) => {
       const data = await getCast(id);
       setCast(data?.cast);
       setCrew(data?.crew);
+     
     };
     getCastDetails();
     getMovieDetails();
+    
   }, [id]);
 
 
@@ -71,7 +92,6 @@ const MovieDetailScreen = ({ }) => {
         <Text style={styles.title}>{movie?.title}</Text>
         <View style={{ flexDirection: 'row' }} >
           <LabelValueView label="Release Date :" value={movie?.release_date} />
-         <FontAwesome size={24} name="share-alt-square" onPress={() => onShare(movie, cast)} style={{ marginTop: 2 }} color={'#5dade2'} />
         </View>
         <RatingPopup
           movieId={movie?.id}
@@ -79,8 +99,8 @@ const MovieDetailScreen = ({ }) => {
           onClose={closePopup}
         />
         <View style={{ flexDirection: 'row' }} >
-          <LabelValueView label="Rating :" value={convertToPercentage(movie?.vote_average)} />
-          <LabelValueView label="Total Vote :" value={movie?.vote_count} />
+          <RatingCircle rating={movie?.vote_average} />
+          <LabelValueView label="Vote Count :" value={movie?.vote_count} />
           <RatingButton onPress={openPopup} />
         </View>
         

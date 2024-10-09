@@ -1,8 +1,8 @@
-import axios from 'axios';
 import NetInfo from '@react-native-community/netinfo';
 import { saveToCache, getMoviesList } from '../storage/storage';
-import { Alert,ToastAndroid } from 'react-native';
+import { Alert } from 'react-native';
 import { API_CONFIG } from './apiConfig'; // Import the API config
+import apiClient from './apiClient';
 
 // Centralized error handling
 const handleError = (error) => {
@@ -18,11 +18,7 @@ const handleError = (error) => {
 // Fetch from API with error handling
 const fetchFromAPI = async (url, params = {}) => {
   try {
-    const response = await axios.get(`${API_CONFIG.BASE_URL}${url}`, {
-      headers: {
-        Authorization: API_CONFIG.HEADERS.AUTHORIZATION,
-        Accept: API_CONFIG.HEADERS.ACCEPT,
-      },
+    const response = await apiClient.get(`${url}`, {
       params,
     });
     return response.data;
@@ -99,8 +95,8 @@ export const getCast = async (movieId) => {
 // Add Movie Rating with error handling
 export const postRating = async (movieId, rating) => {
   try {
-    const response = await axios.post(
-      `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.ADD_RATING(movieId)}`,
+    const response = await apiClient.post(
+      `${API_CONFIG.ENDPOINTS.ADD_RATING(movieId)}`,
       { value: rating },
       {
         headers: {
